@@ -4,82 +4,85 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>교사 도구 - Teacher Tool</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        
+        header {
+            background-color: #35424a;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+        }
+        
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+            padding: 20px;
+        }
+        
+        .tool-section {
+            background: white;
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        footer {
+            background-color: #35424a;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
 </head>
 <body>
     <header>
-        <div class="logo">
-            <h1><i class="fas fa-chalkboard-teacher"></i> 교사 도구</h1>
-        </div>
-        <nav>
-            <ul>
-                <li><a href="#" class="active">홈</a></li>
-                <li><a href="#">자료</a></li>
-                <li><a href="#">관리</a></li>
-                <li><a href="#">문의</a></li>
-            </ul>
-        </nav>
+        <h1>교사 도구 (Teacher Tool)</h1>
+        <p>효율적인 수업 관리를 위한 도구 모음</p>
     </header>
 
-    <section class="showcase">
-        <div class="container">
-            <h1>효율적인 수업 관리를 위한 도구 모음</h1>
-            <p>교사를 위한 다양한 도구와 자료를 한 곳에서 찾아보세요</p>
-            <a href="#tools" class="btn">시작하기</a>
+    <div class="container">
+        <div class="tool-section">
+            <h2>수업 자료</h2>
+            <ul>
+                <li>수업 계획서 템플릿</li>
+                <li>학생 평가 양식</li>
+                <li>교육 자료 라이브러리</li>
+            </ul>
         </div>
-    </section>
 
-    <section id="tools" class="tools">
-        <div class="container">
-            <h2 class="section-title">주요 도구</h2>
-            
-            <div class="tool-grid">
-                <div class="tool-card">
-                    <i class="fas fa-book"></i>
-                    <h3>수업 자료</h3>
-                    <ul>
-                        <li>수업 계획서 템플릿</li>
-                        <li>학생 평가 양식</li>
-                        <li>교육 자료 라이브러리</li>
-                    </ul>
-                    <a href="#" class="btn-small">자세히 보기</a>
-                </div>
-                
-                <div class="tool-card">
-                    <i class="fas fa-tasks"></i>
-                    <h3>수업 관리</h3>
-                    <ul>
-                        <li>출석 체크 시스템</li>
-                        <li>과제 제출 관리</li>
-                        <li>성적 관리 도구</li>
-                    </ul>
-                    <a href="#" class="btn-small">자세히 보기</a>
-                </div>
-                
-                <div class="tool-card">
-                    <i class="fas fa-comments"></i>
-                    <h3>커뮤니케이션</h3>
-                    <ul>
-                        <li>학부모 연락 시스템</li>
-                        <li>학생 피드백 도구</li>
-                        <li>교사 커뮤니티 포럼</li>
-                    </ul>
-                    <a href="#" class="btn-small">자세히 보기</a>
-                </div>
-            </div>
+        <div class="tool-section">
+            <h2>수업 관리</h2>
+            <ul>
+                <li>출석 체크 시스템</li>
+                <li>과제 제출 관리</li>
+                <li>성적 관리 도구</li>
+            </ul>
         </div>
-    </section>
+
+        <div class="tool-section">
+            <h2>커뮤니케이션</h2>
+            <ul>
+                <li>학부모 연락 시스템</li>
+                <li>학생 피드백 도구</li>
+                <li>교사 커뮤니티 포럼</li>
+            </ul>
+        </div>
+    </div>
 
     <footer>
-        <div class="container">
-            <p>&copy; 2023 교사 도구 (Teacher Tool)</p>
-            <div class="social">
-                <a href="#"><i class="fab fa-facebook"></i></a>
-                <a href="#"><i class="fab fa-twitter"></i></a>
-                <a href="#"><i class="fab fa-instagram"></i></a>
-            </div>
-        </div>
+        <p>&copy; 2023 교사 도구 (Teacher Tool) | 문의: contact@teachertool.com</p>
     </footer>
 </body>
 </html>
