@@ -33,93 +33,112 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // 칠판 기능 구현
-    const canvas = document.getElementById('drawing-board');
-    const ctx = canvas.getContext('2d');
-    let isDrawing = false;
-    let lastX = 0;
-    let lastY = 0;
-    let currentTool = 'pen';
-    let currentColor = '#000000';
-    let lineWidth = 5;
+    const chalkboard = document.getElementById('chalkboard');
+    const boldBtn = document.getElementById('bold-btn');
+    const italicBtn = document.getElementById('italic-btn');
+    const underlineBtn = document.getElementById('underline-btn');
+    const fontSizeSelect = document.getElementById('font-size');
+    const textColorSelect = document.getElementById('text-color');
+    const highlightBtn = document.getElementById('highlight-btn');
+    const clearBtn = document.getElementById('clear-board');
+    const copyBtn = document.getElementById('copy-btn');
     
-    // 캔버스 크기 설정
-    function resizeCanvas() {
-        canvas.width = canvas.offsetWidth;
-        canvas.height = canvas.offsetHeight;
-        ctx.lineJoin = 'round';
-        ctx.lineCap = 'round';
+    // 칠판에 초기 내용 추가
+    chalkboard.innerHTML = `동해물과 백두산이 마르고 닳도록
+하느님이 보우하사 우리나라 만세
+무궁화 삼천리 화려 강산
+대한 사람 대한으로 길이 보전하세
+
+남산 위에 저 소나무 철갑을 두른 듯
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.`;
+    
+    // 텍스트 서식 적용 함수
+    function applyFormatting(command, value = null) {
+        document.execCommand(command, false, value);
+        chalkboard.focus();
     }
     
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
+    // 버튼 클릭 이벤트
+    boldBtn.addEventListener('click', () => {
+        boldBtn.classList.toggle('active');
+        applyFormatting('bold');
+    });
     
-    function draw(e) {
-        if (!isDrawing) return;
+    italicBtn.addEventListener('click', () => {
+        italicBtn.classList.toggle('active');
+        applyFormatting('italic');
+    });
+    
+    underlineBtn.addEventListener('click', () => {
+        underlineBtn.classList.toggle('active');
+        applyFormatting('underline');
+    });
+    
+    fontSizeSelect.addEventListener('change', () => {
+        applyFormatting('fontSize', fontSizeSelect.value);
+    });
+    
+    textColorSelect.addEventListener('change', () => {
+        applyFormatting('foreColor', textColorSelect.value);
+    });
+    
+    highlightBtn.addEventListener('click', () => {
+        highlightBtn.classList.toggle('active');
         
-        ctx.strokeStyle = currentTool === 'eraser' ? '#FFFFFF' : currentColor;
-        ctx.lineWidth = currentTool === 'eraser' ? 20 : lineWidth;
-        
-        ctx.beginPath();
-        ctx.moveTo(lastX, lastY);
-        
-        // 마우스 또는 터치 위치 계산
-        let clientX, clientY;
-        if (e.type.includes('touch')) {
-            clientX = e.touches[0].clientX;
-            clientY = e.touches[0].clientY;
-        } else {
-            clientX = e.clientX;
-            clientY = e.clientY;
+        // 선택된 텍스트에 형광펜 효과 적용
+        const selection = window.getSelection();
+        if (selection.rangeCount > 0) {
+            const range = selection.getRangeAt(0);
+            const selectedText = range.toString();
+            
+            if (selectedText) {
+                // 형광펜 효과를 토글하기 위해 부모 요소 확인
+                const parentElement = range.commonAncestorContainer.parentElement;
+                
+                if (parentElement.classList && parentElement.classList.contains('highlight')) {
+                    // 이미 형광펜 효과가 있으면 제거
+                    const textNode = document.createTextNode(parentElement.textContent);
+                    parentElement.parentNode.replaceChild(textNode, parentElement);
+                } else {
+                    // 형광펜 효과 추가
+                    const span = document.createElement('span');
+                    span.className = 'highlight';
+                    range.surroundContents(span);
+                }
+            }
         }
+    });
+    
+    clearBtn.addEventListener('click', () => {
+        if (confirm('정말로 칠판을 지우시겠습니까?')) {
+            chalkboard.innerHTML = '';
+        }
+    });
+    
+    copyBtn.addEventListener('click', () => {
+        // 칠판 내용을 클립보드에 복사
+        const range = document.createRange();
+        range.selectNodeContents(chalkboard);
         
-        const rect = canvas.getBoundingClientRect();
-        const x = clientX - rect.left;
-        const y = clientY - rect.top;
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
         
-        ctx.lineTo(x, y);
-        ctx.stroke();
+        document.execCommand('copy');
+        selection.removeAllRanges();
         
-        lastX = x;
-        lastY = y;
-    }
-    
-    canvas.addEventListener('mousedown', function(e) {
-        isDrawing = true;
-        const rect = canvas.getBoundingClientRect();
-        lastX = e.clientX - rect.left;
-        lastY = e.clientY - rect.top;
-    });
-    
-    canvas.addEventListener('touchstart', function(e) {
-        isDrawing = true;
-        const rect = canvas.getBoundingClientRect();
-        lastX = e.touches[0].clientX - rect.left;
-        lastY = e.touches[0].clientY - rect.top;
-    });
-    
-    canvas.addEventListener('mousemove', draw);
-    canvas.addEventListener('touchmove', draw);
-    
-    canvas.addEventListener('mouseup', () => isDrawing = false);
-    canvas.addEventListener('mouseout', () => isDrawing = false);
-    canvas.addEventListener('touchend', () => isDrawing = false);
-    
-    // 도구 선택
-    document.getElementById('pen-tool').addEventListener('click', function() {
-        currentTool = 'pen';
-    });
-    
-    document.getElementById('eraser-tool').addEventListener('click', function() {
-        currentTool = 'eraser';
-    });
-    
-    document.getElementById('color-picker').addEventListener('input', function() {
-        currentColor = this.value;
-        currentTool = 'pen';
-    });
-    
-    document.getElementById('clear-board').addEventListener('click', function() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        alert('칠판 내용이 클립보드에 복사되었습니다.');
     });
     
     // 타이머 기능 구현
@@ -212,4 +231,23 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 초기 상태 설정
     updateTimerDisplay();
+    
+    // 칠판에 포커스가 있을 때 키보드 단축키 처리
+    chalkboard.addEventListener('keydown', function(e) {
+        // Ctrl+B: 굵게
+        if (e.ctrlKey && e.key === 'b') {
+            e.preventDefault();
+            boldBtn.click();
+        }
+        // Ctrl+I: 기울임
+        else if (e.ctrlKey && e.key === 'i') {
+            e.preventDefault();
+            italicBtn.click();
+        }
+        // Ctrl+U: 밑줄
+        else if (e.ctrlKey && e.key === 'u') {
+            e.preventDefault();
+            underlineBtn.click();
+        }
+    });
 });
