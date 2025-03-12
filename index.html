@@ -4,45 +4,97 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>교사 도구 - Teacher Tool</title>
-    <link rel="stylesheet" href="css/style.css">   
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 <body>
     <header>
-        <h1>교사 도구 (Teacher Tool)</h1>
-        <p>효율적인 수업 관리를 위한 도구 모음</p>
+        <h1><i class="fas fa-chalkboard-teacher"></i> 교사 도구</h1>
+        <nav>
+            <ul>
+                <li><a href="#" class="active" id="home-link">홈</a></li>
+                <li><a href="#" id="whiteboard-link">칠판</a></li>
+                <li><a href="#" id="timer-link">타이머</a></li>
+                <li><a href="#" id="picker-link">학생 뽑기</a></li>
+            </ul>
+        </nav>
     </header>
 
-    <div class="container">
-        <div class="tool-section">
-            <h2>수업 자료</h2>
-            <ul>
-                <li>수업 계획서 템플릿</li>
-                <li>학생 평가 양식</li>
-                <li>교육 자료 라이브러리</li>
-            </ul>
-        </div>
+    <main>
+        <!-- 홈 화면 -->
+        <section id="home" class="tool-section active">
+            <h2>교사를 위한 수업 도구</h2>
+            <p>왼쪽 메뉴에서 원하는 도구를 선택하세요:</p>
+            <div class="tools-grid">
+                <div class="tool-card" id="whiteboard-card">
+                    <i class="fas fa-chalkboard"></i>
+                    <h3>디지털 칠판</h3>
+                    <p>자유롭게 그리고 지울 수 있는 디지털 칠판입니다.</p>
+                </div>
+                <div class="tool-card" id="timer-card">
+                    <i class="fas fa-clock"></i>
+                    <h3>수업 타이머</h3>
+                    <p>수업 시간을 효과적으로 관리할 수 있는 타이머입니다.</p>
+                </div>
+                <div class="tool-card" id="picker-card">
+                    <i class="fas fa-random"></i>
+                    <h3>학생 뽑기</h3>
+                    <p>학생 목록에서 무작위로 학생을 선택합니다.</p>
+                </div>
+            </div>
+        </section>
 
-        <div class="tool-section">
-            <h2>수업 관리</h2>
-            <ul>
-                <li>출석 체크 시스템</li>
-                <li>과제 제출 관리</li>
-                <li>성적 관리 도구</li>
-            </ul>
-        </div>
+        <!-- 칠판 도구 -->
+        <section id="whiteboard" class="tool-section">
+            <h2>디지털 칠판</h2>
+            <div class="whiteboard-controls">
+                <button id="pen-tool"><i class="fas fa-pen"></i> 펜</button>
+                <button id="eraser-tool"><i class="fas fa-eraser"></i> 지우개</button>
+                <input type="color" id="color-picker" value="#000000">
+                <button id="clear-board"><i class="fas fa-trash"></i> 모두 지우기</button>
+            </div>
+            <canvas id="drawing-board"></canvas>
+        </section>
 
-        <div class="tool-section">
-            <h2>커뮤니케이션</h2>
-            <ul>
-                <li>학부모 연락 시스템</li>
-                <li>학생 피드백 도구</li>
-                <li>교사 커뮤니티 포럼</li>
-            </ul>
-        </div>
-    </div>
+        <!-- 타이머 도구 -->
+        <section id="timer" class="tool-section">
+            <h2>수업 타이머</h2>
+            <div class="timer-display">
+                <span id="minutes">05</span>:<span id="seconds">00</span>
+            </div>
+            <div class="timer-controls">
+                <button id="set-timer"><i class="fas fa-cog"></i> 시간 설정</button>
+                <button id="start-timer"><i class="fas fa-play"></i> 시작</button>
+                <button id="pause-timer"><i class="fas fa-pause"></i> 일시정지</button>
+                <button id="reset-timer"><i class="fas fa-redo"></i> 초기화</button>
+            </div>
+            <div class="timer-presets">
+                <button data-time="60">1분</button>
+                <button data-time="180">3분</button>
+                <button data-time="300">5분</button>
+                <button data-time="600">10분</button>
+            </div>
+        </section>
+
+        <!-- 학생 뽑기 도구 -->
+        <section id="picker" class="tool-section">
+            <h2>학생 뽑기</h2>
+            <div class="student-input">
+                <textarea id="student-list" placeholder="학생 이름을 한 줄에 하나씩 입력하세요"></textarea>
+                <button id="pick-student"><i class="fas fa-random"></i> 학생 뽑기</button>
+            </div>
+            <div class="result-display">
+                <div id="result-box">
+                    <span id="selected-student">?</span>
+                </div>
+            </div>
+        </section>
+    </main>
 
     <footer>
-        <p>&copy; 2023 교사 도구 (Teacher Tool) | 문의: contact@teachertool.com</p>
+        <p>&copy; 2023 교사 도구 | 수업을 더 효율적으로</p>
     </footer>
+
+    <script src="js/script.js"></script>
 </body>
 </html>
