@@ -48,29 +48,53 @@
         <section id="whiteboard" class="tool-section">
             <div class="whiteboard-header">
                 <h2>수업 칠판</h2>
-                <button id="clear-board" class="clear-btn">칠판 지우기</button>
+                <button id="clear-board" class="clear-btn"><i class="fas fa-eraser"></i> 칠판 지우기</button>
             </div>
             <div class="whiteboard-toolbar">
-                <button id="bold-btn" title="굵게"><b>B</b></button>
-                <button id="italic-btn" title="기울임"><i>I</i></button>
-                <button id="underline-btn" title="밑줄"><u>U</u></button>
-                <select id="font-size" title="글자 크기">
-                    <option value="3">보통</option>
-                    <option value="1">아주 작게</option>
-                    <option value="2">작게</option>
-                    <option value="4">크게</option>
-                    <option value="5">아주 크게</option>
-                </select>
-                <select id="text-color" title="글자 색상">
-                    <option value="#FFFFFF">흰색</option>
-                    <option value="#FFFF00">노란색</option>
-                    <option value="#FF9900">주황색</option>
-                    <option value="#FF0000">빨간색</option>
-                    <option value="#9900FF">보라색</option>
-                    <option value="#0000FF">파란색</option>
-                </select>
-                <button id="highlight-btn" title="형광펜">형광펜</button>
-                <button id="copy-btn" title="칠판 내용 복사">복사</button>
+                <div class="toolbar-group">
+                    <button id="bold-btn" title="굵게" class="tool-btn"><b>B</b></button>
+                    <button id="italic-btn" title="기울임" class="tool-btn"><i>I</i></button>
+                    <button id="underline-btn" title="밑줄" class="tool-btn"><u>U</u></button>
+                </div>
+                
+                <div class="toolbar-group">
+                    <select id="font-size" title="글자 크기" class="tool-select">
+                        <option value="3">보통</option>
+                        <option value="1">아주 작게</option>
+                        <option value="2">작게</option>
+                        <option value="4">크게</option>
+                        <option value="5">아주 크게</option>
+                        <option value="6">매우 크게</option>
+                        <option value="7">초대형</option>
+                    </select>
+                </div>
+                
+                <div class="toolbar-group">
+                    <select id="text-color" title="글자 색상" class="tool-select">
+                        <option value="#FFFFFF">흰색</option>
+                        <option value="#FFFF00">노란색</option>
+                        <option value="#FF9900">주황색</option>
+                        <option value="#FF0000">빨간색</option>
+                        <option value="#9900FF">보라색</option>
+                        <option value="#0000FF">파란색</option>
+                        <option value="#00FF00">초록색</option>
+                    </select>
+                </div>
+                
+                <div class="toolbar-group highlight-group">
+                    <button id="highlight-btn" title="형광펜" class="tool-btn"><i class="fas fa-highlighter"></i> 형광펜</button>
+                    <select id="highlight-color" title="형광펜 색상" class="tool-select">
+                        <option value="#FFFF00">노란색</option>
+                        <option value="#FF9900">주황색</option>
+                        <option value="#FF00FF">분홍색</option>
+                        <option value="#00FFFF">하늘색</option>
+                        <option value="#00FF00">연두색</option>
+                    </select>
+                </div>
+                
+                <div class="toolbar-group">
+                    <button id="copy-btn" title="칠판 내용 복사" class="tool-btn"><i class="fas fa-copy"></i> 복사</button>
+                </div>
             </div>
             <div id="chalkboard-container">
                 <div id="chalkboard" contenteditable="true" spellcheck="false"></div>
