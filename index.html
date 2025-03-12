@@ -29,7 +29,7 @@
                 <div class="tool-card" id="whiteboard-card">
                     <i class="fas fa-chalkboard"></i>
                     <h3>디지털 칠판</h3>
-                    <p>자유롭게 그리고 지울 수 있는 디지털 칠판입니다.</p>
+                    <p>자유롭게 타이핑하고 서식을 적용할 수 있는 디지털 칠판입니다.</p>
                 </div>
                 <div class="tool-card" id="timer-card">
                     <i class="fas fa-clock"></i>
@@ -46,14 +46,35 @@
 
         <!-- 칠판 도구 -->
         <section id="whiteboard" class="tool-section">
-            <h2>디지털 칠판</h2>
-            <div class="whiteboard-controls">
-                <button id="pen-tool"><i class="fas fa-pen"></i> 펜</button>
-                <button id="eraser-tool"><i class="fas fa-eraser"></i> 지우개</button>
-                <input type="color" id="color-picker" value="#000000">
-                <button id="clear-board"><i class="fas fa-trash"></i> 모두 지우기</button>
+            <div class="whiteboard-header">
+                <h2>수업 칠판</h2>
+                <button id="clear-board" class="clear-btn">칠판 지우기</button>
             </div>
-            <canvas id="drawing-board"></canvas>
+            <div class="whiteboard-toolbar">
+                <button id="bold-btn" title="굵게"><b>B</b></button>
+                <button id="italic-btn" title="기울임"><i>I</i></button>
+                <button id="underline-btn" title="밑줄"><u>U</u></button>
+                <select id="font-size" title="글자 크기">
+                    <option value="3">보통</option>
+                    <option value="1">아주 작게</option>
+                    <option value="2">작게</option>
+                    <option value="4">크게</option>
+                    <option value="5">아주 크게</option>
+                </select>
+                <select id="text-color" title="글자 색상">
+                    <option value="#FFFFFF">흰색</option>
+                    <option value="#FFFF00">노란색</option>
+                    <option value="#FF9900">주황색</option>
+                    <option value="#FF0000">빨간색</option>
+                    <option value="#9900FF">보라색</option>
+                    <option value="#0000FF">파란색</option>
+                </select>
+                <button id="highlight-btn" title="형광펜">형광펜</button>
+                <button id="copy-btn" title="칠판 내용 복사">복사</button>
+            </div>
+            <div id="chalkboard-container">
+                <div id="chalkboard" contenteditable="true" spellcheck="false"></div>
+            </div>
         </section>
 
         <!-- 타이머 도구 -->
