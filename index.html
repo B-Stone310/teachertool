@@ -6,6 +6,7 @@
     <title>교사 도구 - Teacher Tool</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
     <header>
@@ -21,10 +22,33 @@
     </header>
 
     <main>
+        <!-- 시간 표시 영역 -->
+        <div class="time-container">
+            <div class="current-time">
+                <h3>현재 시간</h3>
+                <div class="time-display" id="current-time-display">00:00:00</div>
+                <div id="current-date"></div>
+            </div>
+            <div class="class-timer">
+                <h3>수업 타이머</h3>
+                <div class="timer-inputs">
+                    <input type="number" id="hours-input" min="0" max="23" value="0" placeholder="시">
+                    <input type="number" id="minutes-input" min="0" max="59" value="0" placeholder="분">
+                    <input type="number" id="seconds-input" min="0" max="59" value="0" placeholder="초">
+                </div>
+                <div class="time-display" id="timer-display">00:00:00</div>
+                <div class="timer-controls">
+                    <button id="start-timer" class="timer-btn start-btn"><i class="fas fa-play"></i> 시작</button>
+                    <button id="pause-timer" class="timer-btn pause-btn"><i class="fas fa-pause"></i> 정지</button>
+                    <button id="reset-timer" class="timer-btn reset-btn"><i class="fas fa-redo"></i> 초기화</button>
+                </div>
+            </div>
+        </div>
+
         <!-- 홈 화면 -->
         <section id="home" class="tool-section active">
             <h2>교사를 위한 수업 도구</h2>
-            <p>왼쪽 메뉴에서 원하는 도구를 선택하세요:</p>
+            <p>원하는 도구를 선택하세요:</p>
             <div class="tools-grid">
                 <div class="tool-card" id="whiteboard-card">
                     <i class="fas fa-chalkboard"></i>
@@ -93,7 +117,7 @@
                 </div>
                 
                 <div class="toolbar-group">
-                    <button id="copy-btn" title="칠판 내용 복사" class="tool-btn"><i class="fas fa-copy"></i> 복사</button>
+                    <button id="copy-btn" title="선택 영역 복사" class="tool-btn"><i class="fas fa-copy"></i> 복사</button>
                 </div>
             </div>
             <div id="chalkboard-container">
@@ -101,33 +125,32 @@
             </div>
         </section>
 
-        <!-- 타이머 도구 -->
-        <section id="timer" class="tool-section">
-            <h2>수업 타이머</h2>
-            <div class="timer-display">
-                <span id="minutes">05</span>:<span id="seconds">00</span>
-            </div>
-            <div class="timer-controls">
-                <button id="set-timer"><i class="fas fa-cog"></i> 시간 설정</button>
-                <button id="start-timer"><i class="fas fa-play"></i> 시작</button>
-                <button id="pause-timer"><i class="fas fa-pause"></i> 일시정지</button>
-                <button id="reset-timer"><i class="fas fa-redo"></i> 초기화</button>
-            </div>
-            <div class="timer-presets">
-                <button data-time="60">1분</button>
-                <button data-time="180">3분</button>
-                <button data-time="300">5분</button>
-                <button data-time="600">10분</button>
-            </div>
-        </section>
-
         <!-- 학생 뽑기 도구 -->
         <section id="picker" class="tool-section">
             <h2>학생 뽑기</h2>
-            <div class="student-input">
-                <textarea id="student-list" placeholder="학생 이름을 한 줄에 하나씩 입력하세요"></textarea>
-                <button id="pick-student"><i class="fas fa-random"></i> 학생 뽑기</button>
+            <div class="student-input-methods">
+                <div class="input-method">
+                    <h3>직접 입력</h3>
+                    <textarea id="student-list" placeholder="학생 이름을 한 줄에 하나씩 입력하세요"></textarea>
+                </div>
+                <div class="input-method">
+                    <h3>엑셀 파일 업로드</h3>
+                    <div class="file-upload">
+                        <input type="file" id="excel-upload" accept=".xlsx, .xls" />
+                        <label for="excel-upload"><i class="fas fa-file-excel"></i> 엑셀 파일 선택</label>
+                    </div>
+                    <div class="excel-options">
+                        <select id="sheet-select" disabled>
+                            <option value="">시트 선택</option>
+                        </select>
+                        <select id="column-select" disabled>
+                            <option value="">열 선택</option>
+                        </select>
+                    </div>
+                    <div id="excel-preview"></div>
+                </div>
             </div>
+            <button id="pick-student" class="pick-btn"><i class="fas fa-random"></i> 학생 뽑기</button>
             <div class="result-display">
                 <div id="result-box">
                     <span id="selected-student">?</span>
