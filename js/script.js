@@ -40,28 +40,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const fontSizeSelect = document.getElementById('font-size');
     const textColorSelect = document.getElementById('text-color');
     const highlightBtn = document.getElementById('highlight-btn');
+    const highlightColorSelect = document.getElementById('highlight-color');
     const clearBtn = document.getElementById('clear-board');
     const copyBtn = document.getElementById('copy-btn');
-    
-    // 칠판에 초기 내용 추가
-    chalkboard.innerHTML = `동해물과 백두산이 마르고 닳도록
-하느님이 보우하사 우리나라 만세
-무궁화 삼천리 화려 강산
-대한 사람 대한으로 길이 보전하세
-
-남산 위에 저 소나무 철갑을 두른 듯
-.
-.
-.
-.
-.
-.
-.
-.
-.
-.
-.
-.`;
     
     // 텍스트 서식 적용 함수
     function applyFormatting(command, value = null) {
@@ -93,30 +74,38 @@ document.addEventListener('DOMContentLoaded', function() {
         applyFormatting('foreColor', textColorSelect.value);
     });
     
+    // 형광펜 기능 개선
     highlightBtn.addEventListener('click', () => {
         highlightBtn.classList.toggle('active');
         
-        // 선택된 텍스트에 형광펜 효과 적용
         const selection = window.getSelection();
         if (selection.rangeCount > 0) {
             const range = selection.getRangeAt(0);
             const selectedText = range.toString();
             
             if (selectedText) {
-                // 형광펜 효과를 토글하기 위해 부모 요소 확인
-                const parentElement = range.commonAncestorContainer.parentElement;
+                const highlightColor = highlightColorSelect.value;
                 
-                if (parentElement.classList && parentElement.classList.contains('highlight')) {
-                    // 이미 형광펜 효과가 있으면 제거
-                    const textNode = document.createTextNode(parentElement.textContent);
-                    parentElement.parentNode.replaceChild(textNode, parentElement);
-                } else {
-                    // 형광펜 효과 추가
-                    const span = document.createElement('span');
-                    span.className = 'highlight';
+                // 형광펜 효과 적용
+                const span = document.createElement('span');
+                span.style.backgroundColor = highlightColor;
+                span.style.color = 'black'; // 형광펜 위의 텍스트는 검정색으로
+                
+                try {
                     range.surroundContents(span);
+                } catch (e) {
+                    console.log('형광펜 적용 중 오류 발생:', e);
+                    // 선택 영역이 복잡한 경우 대체 방법
+                    applyFormatting('hiliteColor', highlightColor);
                 }
             }
+        }
+    });
+    
+    // 형광펜 색상 변경 시 형광펜 버튼 활성화
+    highlightColorSelect.addEventListener('change', () => {
+        if (!highlightBtn.classList.contains('active')) {
+            highlightBtn.click();
         }
     });
     
