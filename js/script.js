@@ -1,4 +1,117 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // 현재 시간 및 날짜 표시 기능
+    function updateCurrentTime() {
+        const now = new Date();
+        const hours = now.getHours().toString().padStart(2, '0');
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        const seconds = now.getSeconds().toString().padStart(2, '0');
+        
+        document.getElementById('current-time-display').textContent = `${hours}:${minutes}:${seconds}`;
+        
+        const year = now.getFullYear();
+        const month = (now.getMonth() + 1).toString().padStart(2, '0');
+        const day = now.getDate().toString().padStart(2, '0');
+        const dayOfWeek = ['일', '월', '화', '수', '목', '금', '토'][now.getDay()];
+        
+        document.getElementById('current-date').textContent = `${year}년 ${month}월 ${day}일 ${dayOfWeek}요일`;
+    }
+    
+    // 초기 시간 설정 및 1초마다 업데이트
+    updateCurrentTime();
+    setInterval(updateCurrentTime, 1000);
+    
+    // 타이머 기능
+    const hoursInput = document.getElementById('hours-input');
+    const minutesInput = document.getElementById('minutes-input');
+    const secondsInput = document.getElementById('seconds-input');
+    const timerDisplay = document.getElementById('timer-display');
+    const startTimerBtn = document.getElementById('start-timer');
+    const pauseTimerBtn = document.getElementById('pause-timer');
+    const resetTimerBtn = document.getElementById('reset-timer');
+    
+    let timerInterval;
+    let totalSeconds = 0;
+    let remainingSeconds = 0;
+    
+    function updateTimerInputs() {
+        const hours = Math.floor(remainingSeconds / 3600);
+        const minutes = Math.floor((remainingSeconds % 3600) / 60);
+        const seconds = remainingSeconds % 60;
+        
+        hoursInput.value = hours;
+        minutesInput.value = minutes;
+        secondsInput.value = seconds;
+    }
+    
+    function updateTimerDisplay() {
+        const hours = Math.floor(remainingSeconds / 3600).toString().padStart(2, '0');
+        const minutes = Math.floor((remainingSeconds % 3600) / 60).toString().padStart(2, '0');
+        const seconds = (remainingSeconds % 60).toString().padStart(2, '0');
+        
+        timerDisplay.textContent = `${hours}:${minutes}:${seconds}`;
+    }
+    
+    function startTimer() {
+        clearInterval(timerInterval);
+        
+        // 타이머가 0이면 입력값으로 설정
+        if (remainingSeconds <= 0) {
+            const hours = parseInt(hoursInput.value) || 0;
+            const minutes = parseInt(minutesInput.value) || 0;
+            const seconds = parseInt(secondsInput.value) || 0;
+            
+            totalSeconds = hours * 3600 + minutes * 60 + seconds;
+            remainingSeconds = totalSeconds;
+        }
+        
+        if (remainingSeconds <= 0) return;
+        
+        timerInterval = setInterval(function() {
+            if (remainingSeconds > 0) {
+                remainingSeconds--;
+                updateTimerDisplay();
+                updateTimerInputs();
+            } else {
+                clearInterval(timerInterval);
+                // 타이머 종료 시 알림음 재생
+                const audio = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-alarm-digital-clock-beep-989.mp3');
+                audio.play();
+            }
+        }, 1000);
+    }
+    
+    startTimerBtn.addEventListener('click', startTimer);
+    
+    pauseTimerBtn.addEventListener('click', function() {
+        clearInterval(timerInterval);
+    });
+    
+    resetTimerBtn.addEventListener('click', function() {
+        clearInterval(timerInterval);
+        hoursInput.value = 0;
+        minutesInput.value = 0;
+        secondsInput.value = 0;
+        totalSeconds = 0;
+        remainingSeconds = 0;
+        updateTimerDisplay();
+    });
+    
+    // 타이머 입력값 변경 시 타이머 업데이트
+    [hoursInput, minutesInput, secondsInput].forEach(input => {
+        input.addEventListener('change', function() {
+            const hours = parseInt(hoursInput.value) || 0;
+            const minutes = parseInt(minutesInput.value) || 0;
+            const seconds = parseInt(secondsInput.value) || 0;
+            
+            totalSeconds = hours * 3600 + minutes * 60 + seconds;
+            remainingSeconds = totalSeconds;
+            updateTimerDisplay();
+        });
+    });
+    
+    // 초기 타이머 표시 업데이트
+    updateTimerDisplay();
+    
     // 네비게이션 및 섹션 전환 기능
     const sections = document.querySelectorAll('.tool-section');
     const navLinks = document.querySelectorAll('nav ul li a');
@@ -92,7 +205,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 span.style.color = 'black'; // 형광펜 위의 텍스트는 검정색으로
                 
                 try {
-                    range.surroundContents(span);
+                                        range.surroundContents(span);
                 } catch (e) {
                     console.log('형광펜 적용 중 오류 발생:', e);
                     // 선택 영역이 복잡한 경우 대체 방법
@@ -109,97 +222,180 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
+    // 칠판 지우기 - 확인 메시지 없이 바로 지우기
     clearBtn.addEventListener('click', () => {
-        if (confirm('정말로 칠판을 지우시겠습니까?')) {
-            chalkboard.innerHTML = '';
-        }
+        chalkboard.innerHTML = '';
     });
     
+    // 선택한 부분만 복사하기
     copyBtn.addEventListener('click', () => {
-        // 칠판 내용을 클립보드에 복사
-        const range = document.createRange();
-        range.selectNodeContents(chalkboard);
-        
         const selection = window.getSelection();
-        selection.removeAllRanges();
-        selection.addRange(range);
         
-        document.execCommand('copy');
-        selection.removeAllRanges();
-        
-        alert('칠판 내용이 클립보드에 복사되었습니다.');
-    });
-    
-    // 타이머 기능 구현
-    let timerInterval;
-    let totalSeconds = 300; // 기본 5분
-    let remainingSeconds = totalSeconds;
-    const minutesDisplay = document.getElementById('minutes');
-    const secondsDisplay = document.getElementById('seconds');
-    
-    function updateTimerDisplay() {
-        const minutes = Math.floor(remainingSeconds / 60);
-        const seconds = remainingSeconds % 60;
-        
-        minutesDisplay.textContent = minutes.toString().padStart(2, '0');
-        secondsDisplay.textContent = seconds.toString().padStart(2, '0');
-    }
-    
-    function startTimer() {
-        clearInterval(timerInterval);
-        
-        timerInterval = setInterval(function() {
-            if (remainingSeconds > 0) {
-                remainingSeconds--;
-                updateTimerDisplay();
-            } else {
-                clearInterval(timerInterval);
-                alert('시간이 종료되었습니다!');
-            }
-        }, 1000);
-    }
-    
-    document.getElementById('start-timer').addEventListener('click', startTimer);
-    
-    document.getElementById('pause-timer').addEventListener('click', function() {
-        clearInterval(timerInterval);
-    });
-    
-    document.getElementById('reset-timer').addEventListener('click', function() {
-        clearInterval(timerInterval);
-        remainingSeconds = totalSeconds;
-        updateTimerDisplay();
-    });
-    
-    document.getElementById('set-timer').addEventListener('click', function() {
-        const minutes = prompt('분 단위로 시간을 입력하세요:', Math.floor(totalSeconds / 60));
-        if (minutes !== null) {
-            totalSeconds = parseInt(minutes) * 60;
-            remainingSeconds = totalSeconds;
-            updateTimerDisplay();
+        // 선택된 텍스트가 있는지 확인
+        if (selection.toString().length > 0) {
+            document.execCommand('copy');
+        } else {
+            // 선택된 텍스트가 없으면 전체 칠판 내용 복사
+            const range = document.createRange();
+            range.selectNodeContents(chalkboard);
+            
+            selection.removeAllRanges();
+            selection.addRange(range);
+            
+            document.execCommand('copy');
+            selection.removeAllRanges();
         }
-    });
-    
-    // 타이머 프리셋 버튼
-    const presetButtons = document.querySelectorAll('.timer-presets button');
-    presetButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            totalSeconds = parseInt(this.dataset.time);
-            remainingSeconds = totalSeconds;
-            updateTimerDisplay();
-        });
     });
     
     // 학생 뽑기 기능 구현
     const studentList = document.getElementById('student-list');
+    const excelUpload = document.getElementById('excel-upload');
+    const sheetSelect = document.getElementById('sheet-select');
+    const columnSelect = document.getElementById('column-select');
+    const excelPreview = document.getElementById('excel-preview');
     const pickButton = document.getElementById('pick-student');
     const selectedStudent = document.getElementById('selected-student');
     
+    let excelData = null;
+    let selectedStudents = [];
+    
+    // 엑셀 파일 업로드 처리
+    excelUpload.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                
+                // 엑셀 데이터 저장
+                excelData = workbook;
+                
+                // 시트 목록 업데이트
+                sheetSelect.innerHTML = '<option value="">시트 선택</option>';
+                workbook.SheetNames.forEach(sheetName => {
+                    const option = document.createElement('option');
+                    option.value = sheetName;
+                    option.textContent = sheetName;
+                    sheetSelect.appendChild(option);
+                });
+                
+                sheetSelect.disabled = false;
+                columnSelect.disabled = true;
+                columnSelect.innerHTML = '<option value="">열 선택</option>';
+                excelPreview.innerHTML = '시트를 선택하세요.';
+                
+            } catch (error) {
+                console.error('엑셀 파일 처리 중 오류 발생:', error);
+                excelPreview.innerHTML = '파일을 읽는 중 오류가 발생했습니다.';
+            }
+        };
+        reader.readAsArrayBuffer(file);
+    });
+    
+    // 시트 선택 시 열 목록 업데이트
+    sheetSelect.addEventListener('change', function() {
+        const sheetName = this.value;
+        if (!sheetName || !excelData) return;
+        
+        try {
+            const worksheet = excelData.Sheets[sheetName];
+            const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+            
+            // 첫 번째 행이 있으면 열 목록 업데이트
+            if (jsonData.length > 0) {
+                columnSelect.innerHTML = '<option value="">열 선택</option>';
+                
+                // 열 인덱스를 A, B, C 형식으로 변환
+                jsonData[0].forEach((_, index) => {
+                    const columnLetter = String.fromCharCode(65 + index); // A, B, C, ...
+                    const option = document.createElement('option');
+                    option.value = index;
+                    option.textContent = `${columnLetter}열`;
+                    columnSelect.appendChild(option);
+                });
+                
+                // 미리보기 표시
+                let previewHTML = '<table border="1" style="width:100%; border-collapse: collapse;">';
+                for (let i = 0; i < Math.min(5, jsonData.length); i++) {
+                    previewHTML += '<tr>';
+                    for (let j = 0; j < jsonData[i].length; j++) {
+                        previewHTML += `<td style="padding: 5px;">${jsonData[i][j] || ''}</td>`;
+                    }
+                    previewHTML += '</tr>';
+                }
+                previewHTML += '</table>';
+                
+                if (jsonData.length > 5) {
+                    previewHTML += '<p>... 더 많은 데이터가 있습니다.</p>';
+                }
+                
+                excelPreview.innerHTML = previewHTML;
+                columnSelect.disabled = false;
+            } else {
+                excelPreview.innerHTML = '데이터가 없습니다.';
+                columnSelect.disabled = true;
+            }
+        } catch (error) {
+            console.error('시트 데이터 처리 중 오류 발생:', error);
+            excelPreview.innerHTML = '시트 데이터를 읽는 중 오류가 발생했습니다.';
+        }
+    });
+    
+    // 열 선택 시 학생 목록 업데이트
+    columnSelect.addEventListener('change', function() {
+        const columnIndex = parseInt(this.value);
+        const sheetName = sheetSelect.value;
+        
+        if (isNaN(columnIndex) || !sheetName || !excelData) return;
+        
+        try {
+            const worksheet = excelData.Sheets[sheetName];
+            const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+            
+            // 선택한 열의 데이터 추출 (첫 번째 행은 헤더로 간주하고 제외)
+            selectedStudents = [];
+            for (let i = 1; i < jsonData.length; i++) {
+                if (jsonData[i][columnIndex] && jsonData[i][columnIndex].toString().trim() !== '') {
+                    selectedStudents.push(jsonData[i][columnIndex].toString());
+                }
+            }
+            
+            // 미리보기 업데이트
+            let previewHTML = '<h4>선택된 학생 목록:</h4><ul>';
+            for (let i = 0; i < Math.min(10, selectedStudents.length); i++) {
+                previewHTML += `<li>${selectedStudents[i]}</li>`;
+            }
+            if (selectedStudents.length > 10) {
+                previewHTML += `<li>... 외 ${selectedStudents.length - 10}명</li>`;
+            }
+            previewHTML += '</ul>';
+            
+            excelPreview.innerHTML = previewHTML;
+            
+        } catch (error) {
+            console.error('열 데이터 처리 중 오류 발생:', error);
+            excelPreview.innerHTML = '데이터를 처리하는 중 오류가 발생했습니다.';
+        }
+    });
+    
+    // 학생 뽑기 버튼 클릭 이벤트
     pickButton.addEventListener('click', function() {
-        const students = studentList.value.split('\n').filter(name => name.trim() !== '');
+        let students = [];
+        
+        // 텍스트 입력에서 학생 목록 가져오기
+        if (studentList.value.trim() !== '') {
+            students = studentList.value.split('\n').filter(name => name.trim() !== '');
+        }
+        // 엑셀에서 선택한 학생 목록 사용
+        else if (selectedStudents.length > 0) {
+            students = selectedStudents;
+        }
         
         if (students.length === 0) {
-            alert('학생 목록을 입력해주세요!');
+            alert('학생 목록을 입력하거나 엑셀 파일에서 선택해주세요!');
             return;
         }
         
@@ -217,9 +413,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }, 100);
     });
-    
-    // 초기 상태 설정
-    updateTimerDisplay();
     
     // 칠판에 포커스가 있을 때 키보드 단축키 처리
     chalkboard.addEventListener('keydown', function(e) {
